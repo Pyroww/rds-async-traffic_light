@@ -81,6 +81,15 @@ Importante ressaltar, que para melhor visualização e didática, fizemos um dia
 5. Conecte o **ESP32**, abra o código presente na pasta `firmware/tx_gateway_esp32/tx_gateway_esp32.ino`, compile e faça o upload.
 6. Conecte o **ESP8266**, abra o código presente na pasta `firmware/rx_atuador_esp8266/rx_atuador_esp8266.ino`, compile e faça o upload.
 
+### ⚠️ Nota de Compilação e Conflitos I2C
+Devido às diferenças arquitetônicas entre a família AVR tradicional e a família Espressif (ESP32/ESP8266), pode ocorrer um atropelamento na alocação dos pinos do barramento I2C por parte das bibliotecas originais.
+
+**Caso o transceptor não seja detectado no monitor serial (Erro no ESP8266 + SI470X):**
+1. Navegue até a pasta de bibliotecas da IDE do Arduino (geralmente em `Documentos/Arduino/libraries/`).
+2. Dentro da pasta `libraries/src`, procure pela pasta `PU2CLR_SI470X` Abra o arquivo fonte `SI470X.cpp` da biblioteca do receptor.
+3. Localize a instrução `Wire.end();` dentro do método de inicialização/setup e **comente-a** (adicionando `//` no início da linha). 
+4. Salve o arquivo e recompile. Isso impedirá que a biblioteca encerre o barramento prematuramente e a obrigará a respeitar os pinos (`D2` e `D1`) definidos pelo seu *firmware*.
+
 ### 2. Rodando o Orquestrador (Software Python)
 Recomenda-se o uso de um ambiente virtual (venv).
 ```bash
@@ -127,7 +136,7 @@ Para garantir o Soft Real-Time (latência < 500ms), definimos que o payload do s
 ## Citação
 Se este projeto ou código for útil para sua pesquisa, por favor, considere citar o artigo originário:
 
-```bash
+```bibtex
 @inproceedings{Sa2026RDS,
   title={Integração de Comandos Assíncronos via Protocolo RDS para Controle Remoto de Semáforos},
   author={Anonimo]},
