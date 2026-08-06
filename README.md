@@ -128,6 +128,11 @@ Os ensaios foram realizados em ambiente controlado. A tabela abaixo demonstra a 
 | **10** | 158 | 188 | 459 |
 | **Média** | **233,1** | **235,8** | **413,2** |
 
+### ⚠️ Nota de analise do teste da tabela de latencia:
+A análise evidencia a consistência operacional do sistema. Para instruções de acionamento imediato e alertas, observou-se uma latência média de `233,1 ms` e `235,8 ms`, respectivamente. Essa equivalência estatística decorre do fato de ambas as instruções utilizarem matrizes de decisão diretas de tamanho fixo (6 bytes), permitindo uma decodificação ágil. 
+
+Por sua vez, a injeção do Ciclo Padrão apresentou um tempo médio de resposta de `413,2 ms`. Esse incremento de latência (≈ 178 ms) é atribuído ao custo computacional adicional exigido pelo *parser* do *firmware* no ESP8266, que necessita validar o prefixo `t`, fracionar a *string* dinâmica em três parâmetros independentes de tempo e reiniciar os contadores assíncronos baseados no temporizador de milissegundos da placa.
+
 ## 🔬 Notas de engenharia (Aprofundamento)
 Durante o desenvolvimento deste protótipo, desafios técnicos foram superados. Devido às restrições de formatação do artigo, detalhamos abaixo as soluções de engenharia adotadas:
 
