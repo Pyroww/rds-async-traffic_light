@@ -1,3 +1,7 @@
+*Read this in other languages: [English](README.md)*
+# rds-async-traffic_light
+> *An experimental tool focused on the potential for integrating open-source RDS (Radio Data System) using IoT/embedded device principles, utilizing the 106.1 MHz frequency on the 57 kHz FM subcarrier via ESP32 and Python.*
+
 # 🚦 Orquestração Semafórica via Protocolo RDS (Out-of-Band IoT)
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
