@@ -110,7 +110,23 @@ python orquestrador.py
 2. No orquestrador, selecione a porta COM correspondente e clique em **Conectar**.
 3. O software realizará um handshake automático (`PING_ID`). Ao receber a assinatura do transmissor, os controles serão liberados
 4. Ligue o ESP8266 (Receptor) em uma fonte de exergia externa (ou outro USB).
-5. Clique nos botões da interface (ex: Ligar Verde). O ESP32 irradiará o dado, o ESP8266 decodificará o RDS pelo ar e o LED do semáforo mudará de estado em menos de 500 milissegundos.
+5. Clique nos botões da interface (ex: Ligar Verde). O ESP32 irradiará o dado, o ESP8266 decodificará o RDS pelo ar e o LED do semáforo mudará de estado em menos de 500 milissegundos conforme a tabela a seguir irá mostrar.
+
+Os ensaios foram realizados em ambiente controlado. A tabela abaixo demonstra a latência de transição do motor de estados de acordo com a complexidade do *payload* injetado, intercalando-os com o comando de desligamento total (`000000`).
+
+| Transmissão | Ligar Verde (ms) | Alerta Noturno (ms) | Ciclo Padrão (ms) |
+| :---: | :---: | :---: | :---: |
+| **1** | 205 | 237 | 426 |
+| **2** | 269 | 214 | 395 |
+| **3** | 282 | 217 | 365 |
+| **4** | 194 | 205 | 390 |
+| **5** | 342 | 228 | 456 |
+| **6** | 159 | 294 | 510 |
+| **7** | 261 | 280 | 384 |
+| **8** | 208 | 277 | 371 |
+| **9** | 253 | 218 | 376 |
+| **10** | 158 | 188 | 459 |
+| **Média** | **233,1** | **235,8** | **413,2** |
 
 ## 🔬 Notas de engenharia (Aprofundamento)
 Durante o desenvolvimento deste protótipo, desafios técnicos foram superados. Devido às restrições de formatação do artigo, detalhamos abaixo as soluções de engenharia adotadas:
