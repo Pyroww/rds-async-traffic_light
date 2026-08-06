@@ -71,14 +71,15 @@ Importante ressaltar, que para melhor visualização e didática, fizemos um dia
 
 ## 🚀 Tutorial de Instalação
 
-### 1. Preparando o Hardware (Firmware C/C++)
+### Passo 1: 
 1. Instale a [Arduino IDE](https://www.arduino.cc/en/software).
-2. Adicione as placas ESP32 e ESP8266 no Gerenciador de Placas.
-3. Instale as seguintes bibliotecas através do `Library Manager`:
-   - `Adafruit Si4713 Library` (Para o Transmissor)
-   - `PU2CLR SI470X` ou `SparkFun Si4703` (Para o Receptor)
-4. Abra o arquivo `firmware/tx_gateway_esp32/tx_gateway_esp32.ino`, compile e grave no ESP32.
-5. Abra o arquivo `firmware/rx_atuador_esp8266/rx_atuador_esp8266.ino`, compile e grave no ESP8266.
+2. **Instalação de Drivers USB:** Certifique-se de que o seu sistema operacional possui os drivers adequados para comunicação serial. O NodeMCU (ESP8266) comumente requer o driver [**CP210x USB to UART Bridge da Silicon Labs**](https://www.silabs.com/software-and-tools/usb-to-uart-bridge-vcp-drivers?tab=downloads), se caso o driver inicial não funcionar, instale o [driver CH340](https://sparks.gogo.co.nz/ch340.html)
+3. Abra a IDE do Arduino
+4. Confirme as instalações das seguintes bibliotecas através do Library Manager localizado na IDE Arduino:
+   * `Adafruit Si4713 Library` (Para o nó Transmissor)
+   * `PU2CLR SI470X` (Para o nó Receptor)
+5. Conecte o **ESP32**, abra o código presente na pasta `firmware/tx_gateway_esp32/tx_gateway_esp32.ino`, compile e faça o upload.
+6. Conecte o **ESP8266**, abra o código presente na pasta `firmware/rx_atuador_esp8266/rx_atuador_esp8266.ino`, compile e faça o upload.
 
 ### 2. Rodando o Orquestrador (Software Python)
 Recomenda-se o uso de um ambiente virtual (venv).
@@ -93,3 +94,49 @@ pip install -r requirements.txt
 
 # Execute o orquestrador
 python orquestrador.py
+```
+
+## Tutorial de operação
+1. Conecte o ESP32 (Transmissor) na porta USB do computador
+2. No orquestrador, selecione a porta COM correspondente e clique em **Conectar**.
+3. O software realizará um handshake automático (`PING_ID`). Ao receber a assinatura do transmissor, os controles serão liberados
+4. Ligue o ESP8266 (Receptor) em uma fonte de exergia externa (ou outro USB).
+5. Clique nos botões da interface (ex: Ligar Verde). O ESP32 irradiará o dado, o ESP8266 decodificará o RDS pelo ar e o LED do semáforo mudará de estado em menos de 500 milissegundos.
+
+## 🔬 Notas de engenharia (Aprofundamento)
+Durante o desenvolvimento deste protótipo, desafios técnicos foram superados. Devido às restrições de formatação do artigo, detalhamos abaixo as soluções de engenharia adotadas:
+
+### O Desafio do Auto-Reset (DTR/RTS)
+Por padrão em microcontroladores ESP/Arduino, abrir uma nova conexão serial via software altera os estados lógicos dos pinos DTR (Data Terminal Ready) e RTS (Request to Send). Isso aciona o circuito de reset físico da placa. Se isso ocorresse em nosso projeto, o barramento I2C que alimenta o rádio Si4713 reiniciaria e pararia de transmitir a cada comando injetado.
+
+- Solução: Na biblioteca PySerial do orquestrador `Python`, implementamos o bloqueio explícito desses pinos logo antes de abrir a porta:
+```bash
+self.porta_serial.setDTR(False)
+self.porta_serial.setRTS(False)
+```
+
+Isso permite que o ESP32 atue como um gateway ininterrupto, recebendo dados na Serial a 115.200 bps e repassando para o rádio sem piscar a CPU.
+
+### Abstração e Fracionamento do Payload RDS
+O RDS (Grupo 2A) exibe strings de 64 caracteres em rádios comerciais. No entanto, enviar 64 bytes exige múltiplos ciclos de transmissão, o que eleva a latência.
+Para garantir o Soft Real-Time (latência < 500ms), definimos que o payload do sistema possui apenas 6 bytes.
+
+- Comandos Estáticos: Como 110000 (Verde) ou 020202 (Alerta).
+- Ciclos Síncronos Dinâmicos: Usamos o formato tXXYYZZ. O caractere t indica ao receptor que os próximos dígitos são os tempos do ciclo. Ex: t030103 significa "3s Verde, 1s Amarelo, 3s Vermelho". O nó de borda (ESP8266) faz o parser dessa string miúda e controla a temporização por conta própria.
+
+## Citação
+Se este projeto ou código for útil para sua pesquisa, por favor, considere citar o artigo originário:
+
+```bash
+@inproceedings{Sa2026RDS,
+  title={Integração de Comandos Assíncronos via Protocolo RDS para Controle Remoto de Semáforos},
+  author={Anonimo]},
+  booktitle={Anais do XXXII Simpósio Brasileiro de Sistemas Multimídia e Web (WebMedia)},
+  year={2026},
+  publisher={SBC}
+}
+```
+
+## 📄 Licença
+Este projeto é licenciado sob a GNU General Public License v3.0.
+Veja o arquivo LICENSE para mais detalhes. O uso acadêmico, modificação e distribuição são encorajados.
