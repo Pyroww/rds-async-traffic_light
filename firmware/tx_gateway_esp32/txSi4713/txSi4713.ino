@@ -1,0 +1,87 @@
+#include <Wire.h>
+#include <Adafruit_Si4713.h>
+
+#define RESET_PIN 27
+#define FM_FREQ 10610 
+
+Adafruit_Si4713 radio = Adafruit_Si4713(RESET_PIN);
+
+void setup() {
+  Serial.begin(115200); // bater a velocidade exatamente com o Java orquestrador
+
+  
+  // 1. HARDWARE RESET MANUAL
+  // Procedimento para prevenir travamentos e quaisquer erros no barramento de conexão
+  pinMode(RESET_PIN, OUTPUT);
+  
+  // Derrubando a linha de Reset (GND)...
+  digitalWrite(RESET_PIN, LOW);
+  delay(100); // Segura o chip desligado para limpar o travamento
+  
+  // Liberando o chip (3.3V)...
+  digitalWrite(RESET_PIN, HIGH); 
+  delay(50); // Espera o sistema interno dele dar boot
+
+  
+  // 2. APRESENTAÇÃO E INICIALIZAÇÃO
+  
+  Serial.println("SYS_ID:TRANSMISSOR");
+  
+  Wire.begin(21, 22);
+
+  // Agora a biblioteca vai iniciar sem travar, pois o chip já foi resetado à força
+  if (! radio.begin()) {
+    Serial.println("❌ Erro: Si4713 não encontrado!");
+    while (1); 
+  }
+
+  radio.setTXpower(115);
+  radio.tuneFM(FM_FREQ);
+  
+  // Nome da Estação
+  radio.setRDSstation("SBC 2026");
+  
+  // Mensagem inicial de espera (64 caracteres com espaços)
+  radio.setRDSbuffer("Aguardando o Python...                             ");
+  radio.beginRDS();
+
+  Serial.println("✅ Transmissor Pronto! 106.1 MHz.");
+  Serial.println("🎧 Aguardando injeção de dados via Serial...");
+}
+
+void loop() {
+  // Verifica se o Java mandou alguma coisa pela porta USB
+  if (Serial.available() > 0) {
+    
+    // Lê a mensagem até encontrar o '\n' (que o Java envia com o output.print(msg + "\n"))
+    String payloadJava = Serial.readStringUntil('\n');
+    payloadJava.trim(); // Limpa espaços acidentais no início ou fim
+
+    if (payloadJava.length() > 0) {
+      Serial.print("📥 Recebido do Python: [");
+      Serial.print(payloadJava);
+      Serial.println("]");
+
+      
+      // TÉCNICA DE ESTABILIDADE DO RDS (PADDING)
+      
+      // Se a mensagem for menor que 64, o código termina de preencher com espaços
+      while (payloadJava.length() < 64) {
+        payloadJava += " ";
+      }
+      
+      // Se por acaso passar de 64, cortamos para não travar o chip
+      if (payloadJava.length() > 64) {
+        payloadJava = payloadJava.substring(0, 64);
+      }
+
+      // Converte a String do Arduino para o formato C que a biblioteca do Si4713 exige
+      radio.setRDSbuffer(payloadJava.c_str());
+      
+      Serial.println("🚀 Payload injetado no ar via RDS com sucesso!");
+    }
+  }
+  
+  // Pequeno delay para não sobrecarregar o processador do ESP32
+  delay(100); 
+}
