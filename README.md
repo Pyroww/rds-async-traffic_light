@@ -20,9 +20,9 @@
 
 Este repositório contém o código-fonte integral, esquemáticos e a documentação técnica da arquitetura analógica baseada em **Radio Data System (RDS)** para controle remoto de semáforos, apresentada ao Simpósio Brasileiro de Sistemas Multimídia e Web (WebMedia).
 
-O objetivo deste projeto é demonstrar a viabilidade de operar infraestruturas urbanas críticas utilizando radiodifusão FM (VHF) como canal de contingência ou principal, garantindo a resiliência do sistema de trânsito independente de redes IP (Wi-Fi, 4G/5G, Fibra Óptica). 
+O objetivo deste projeto é demonstrar a viabilidade de operar infraestruturas urbanas críticas utilizando radiodifusão FM como canal de contingência ou principal, garantindo a resiliência do sistema de trânsito independente de redes IP (Wi-Fi, 4G/5G, Fibra Óptica). 
 
-Este repositório contém o código-fonte (software e firmware), diagramas e as instruções de replicação de hardware para o projeto de pesquisa **"Usando a Infraestrutura FM como Canal de Controle por RDS"**, submetido à SBC WEBMEDIA.
+Este repositório contém o código-fonte (software e firmware), diagramas e as instruções de replicação de hardware para o projeto de pesquisa **"Integração de Comandos Assíncronos via Protocolo RDS para Controle Remoto de Semáforos"**, submetido à SBC WEBMEDIA.
 
 ---
 
