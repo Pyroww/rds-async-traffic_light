@@ -8,6 +8,17 @@
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue?logo=python)](https://www.python.org/)
 [![C++](https://img.shields.io/badge/C%2B%2B-Arduino-00979D?logo=arduino)](https://www.arduino.cc/)
 
+<table>
+  <tr>
+    <td>
+      <img src="gif_transmissor_legendado" alt="Transmissor Si4713 + ESP 32" width="400"/>
+    </td>
+    <td>
+      <img src="gif_receptor_legendado" alt="Receptor Si4703 + ESP 8266" width="400"/>
+    </td>
+  </tr>
+</table>
+
 Este repositório contém o código-fonte integral, esquemáticos e a documentação técnica da arquitetura analógica baseada em **Radio Data System (RDS)** para controle remoto de semáforos, apresentada ao Simpósio Brasileiro de Sistemas Multimídia e Web (WebMedia).
 
 O objetivo deste projeto é demonstrar a viabilidade de operar infraestruturas urbanas críticas utilizando radiodifusão FM (VHF) como canal de contingência ou principal, garantindo a resiliência do sistema de trânsito independente de redes IP (Wi-Fi, 4G/5G, Fibra Óptica). 
