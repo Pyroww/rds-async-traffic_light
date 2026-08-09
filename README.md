@@ -1,4 +1,3 @@
-*Read this in other languages: [English](README.md)*
 # rds-async-traffic_light
 > *An experimental tool focused on the potential for integrating open-source RDS (Radio Data System) using IoT/embedded device principles, utilizing the 106.1 MHz frequency on the 57 kHz FM subcarrier via ESP32 and Python.*
 
@@ -14,7 +13,7 @@
       <img src="media/gif_transmissor_legendado.gif" alt="Transmissor Si4713 + ESP 32" width="400"/>
     </td>
     <td>
-      <img src="gif_receptor_legendado" alt="Receptor Si4703 + ESP 8266" width="400"/>
+      <img src="media/gif_receptor_legendado.gif" alt="Receptor Si4703 + ESP 8266" width="400"/>
     </td>
   </tr>
 </table>
