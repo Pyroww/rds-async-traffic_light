@@ -11,7 +11,7 @@ import time
 ctk.set_appearance_mode("Light")
 ctk.set_default_color_theme("blue")
 
-# Definição de cores baseadas na versão Java (melhor leitura no fundo claro)
+
 COR_VERDE = "#009600"      # Verde escuro
 COR_AMARELA = "#B8860B"    # GoldenRod
 COR_VERMELHA = "#C80000"   # Vermelho acadêmico
@@ -137,9 +137,7 @@ class CommandCenterRDS(ctk.CTk):
         self.log_area = ctk.CTkTextbox(self, font=ctk.CTkFont(family="Consolas", size=12), state="disabled", wrap="word", fg_color=COR_FUNDO_LOG, text_color="black", border_width=1, border_color="#d0d0d0")
         self.log_area.grid(row=3, column=0, padx=10, pady=10, sticky="nsew")
 
-    # ==========================================
-    # LÓGICA DE NEGÓCIO E SERIAL
-    # ==========================================
+    
 
     def listar_portas(self):
         portas = serial.tools.list_ports.comports()
@@ -149,8 +147,7 @@ class CommandCenterRDS(ctk.CTk):
         timestamp = datetime.now().strftime("[%H:%M:%S] ")
         
         self.log_area.configure(state="normal")
-        # Inserção básica (o CTkTextbox nativo não suporta cores de texto misturadas facilmente
-        # como o JTextArea com StyledDocument, então usamos cores apenas nas mensagens de status da UI)
+        
         self.log_area.configure(text_color=color) 
         self.log_area.insert("end", timestamp + mensagem + "\n")
         self.log_area.see("end")
@@ -158,11 +155,11 @@ class CommandCenterRDS(ctk.CTk):
 
     def bloquear_controles(self, status):
         state = "normal" if status else "disabled"
-        # Painel Manual
+        
         for child in self.frame_manual.winfo_children():
             if isinstance(child, ctk.CTkButton):
                 child.configure(state=state)
-        # Painel Automático
+        
         for child in self.frame_auto.winfo_children():
             if isinstance(child, (ctk.CTkButton, ctk.CTkCheckBox, ctk.CTkEntry)):
                 child.configure(state=state)
@@ -172,7 +169,7 @@ class CommandCenterRDS(ctk.CTk):
             try:
                 msg = (comando + "\n").encode('utf-8')
                 self.porta_serial.write(msg)
-                self.porta_serial.flush() # Garante o envio imediato
+                self.porta_serial.flush() 
                 self.log_dinamico(f"📡 RDS [Protocolo V4]: {comando}")
             except Exception as e:
                 self.log_dinamico(f"❌ Erro ao enviar: {e}", "red")
@@ -181,10 +178,10 @@ class CommandCenterRDS(ctk.CTk):
         texto = entry_widget.get().strip()
         try:
             tempo_segundos = int(texto)
-            tempo_limitado = max(1, min(tempo_segundos, 99)) # Limita entre 1s e 99s
+            tempo_limitado = max(1, min(tempo_segundos, 99)) 
             return f"{tempo_limitado:02d}"
         except ValueError:
-            return "03" # Padrão caso dê erro
+            return "03" 
 
     # --- Ações ---
 
@@ -204,12 +201,10 @@ class CommandCenterRDS(ctk.CTk):
         payload = "t" + v + a + r
         self.injetar_comando(payload)
 
-    # ==========================================
-    # CORE CONEXÃO SERIAL (BLINDAGEM PORTADA DO JAVA)
-    # ==========================================
+    
 
     def conectar_serial(self):
-        # --- LÓGICA DE DESCONECTAR ADICIONADA AQUI ---
+        
         if self.porta_serial and self.porta_serial.is_open:
             self.porta_serial.close()
             self.log_dinamico("Conexão encerrada.")
@@ -217,9 +212,9 @@ class CommandCenterRDS(ctk.CTk):
             self.combo_portas.configure(state="normal")
             self.modo_atual = "DESCONHECIDO"
             self.frame_conexao.configure(fg_color="transparent")
-            self.bloquear_controles(False) # Volta a bloquear a interface
+            self.bloquear_controles(False) 
             return
-        # ---------------------------------------------
+        
 
         porta_nome = self.combo_portas.get()
         if porta_nome == "Nenhuma porta encontrada" or not porta_nome:
@@ -231,12 +226,12 @@ class CommandCenterRDS(ctk.CTk):
             self.porta_serial = serial.Serial()
             self.porta_serial.port = porta_nome
             self.porta_serial.baudrate = 115200
-            self.porta_serial.timeout = 0.1 # Timeout de leitura curto
+            self.porta_serial.timeout = 0.1 
 
-            # BLINDAGEM 1 (Correção Python): Abrir primeiro
+            
             self.porta_serial.open()
             
-            # BLINDAGEM 2 (Igual ao Java): Limpar pinos de Reset/Boot Serial
+            
             self.porta_serial.setDTR(False)
             self.porta_serial.setRTS(False)
 
@@ -274,10 +269,10 @@ class CommandCenterRDS(ctk.CTk):
                 if self.porta_serial.in_waiting > 0:
                     linha = self.porta_serial.readline().decode('utf-8', errors='ignore').strip()
                     if linha:
-                        # Processa na thread principal (UI)
+                        
                         self.after(0, self.processar_linha_serial, linha)
             except Exception as e:
-                # Se fechar a porta intencionalmente, sai da thread
+                
                 if not self.porta_serial or not self.porta_serial.is_open:
                     break
                 # Se for erro real, loga
@@ -285,14 +280,13 @@ class CommandCenterRDS(ctk.CTk):
 
     def processar_linha_serial(self, linha):
         if self.modo_atual == "DESCONHECIDO":
-            # CORREÇÃO CRÍTICA (Handshake Inteligente): Porta o '.contains' do Java
-            # Aceita tanto firmware completo quanto enxuto ("TX: Comando")
+            
             if "SYS_ID:TRANSMISSOR" in linha or "TX: Comando" in linha:
                 self.modo_atual = "TRANSMISSOR"
                 self.frame_conexao.configure(fg_color="#e6ffed") # Fundo esverdeado suave
                 self.bloquear_controles(True)
                 
-                # Ajuste de cores para fundo claro (Green)
+                
                 self.log_dinamico("🚀 TX: Controles Ciber-Físicos Liberados.", COR_VERDE)
                 
                 # --- ATUALIZA O BOTÃO PARA DESCONECTAR ---
