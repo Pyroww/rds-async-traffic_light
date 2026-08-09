@@ -55,7 +55,7 @@ Para replicar este experimento em bancada, você precisará de:
 ---
 
 ## 🔌 Esquema de Ligação (Pinagem)
-Importante ressaltar, que para melhor visualização e didática, fizemos um diagrama ilustrativo visual no diretório `Data/`, contendo cada um das tabelas de esquemas abaixo, bem como as suas respectivas tabelas neste manual de replicação, Ambos os módulos de rádio utilizam o barramento **I2C**. Conecte conforme a tabela:
+Importante ressaltar, que para melhor visualização e didática, fizemos um diagrama ilustrativo visual no diretório `docs/esquematicos/`, contendo cada um das tabelas, os seus esquemáticos abaixo, bem como as suas respectivas tabelas neste manual de replicação, Ambos os módulos de rádio utilizam o barramento **I2C**. Conecte conforme a tabela:
 
 ### Ligações do Transmissor (ESP 32 + Si4713)
 ><p align="left">
