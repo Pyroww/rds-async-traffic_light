@@ -58,22 +58,30 @@ Para replicar este experimento em bancada, você precisará de:
 Importante ressaltar, que para melhor visualização e didática, fizemos um diagrama ilustrativo visual no diretório `Data/`, contendo cada um das tabelas de esquemas abaixo, bem como as suas respectivas tabelas neste manual de replicação, Ambos os módulos de rádio utilizam o barramento **I2C**. Conecte conforme a tabela:
 
 ### Ligações do Transmissor (ESP 32 + Si4713)
-| ESP32 (Host) | Si4713 (Módulo) | Função Técnica |
-| :--- | :--- | :--- |
-| **3V3** | `VIN` | Alimentação Elétrica (3.3V) |
-| **GND** | `GND` | Referência de Aterramento |
-| **D21** | `SDA` | Dados do Barramento I2C |
-| **D22** | `SCL` | Clock do Barramento I2C |
-| **D27** | `RST` | Controle de Reset de Hardware |
+><p align="left">
+>  <img src="docs/esquematicos/Diagrama_TXsi4713_esp32.png" width="75%" alt="Diagrama de conexões do transmissor">
+></p>
+>
+>| ESP32 (Host) | Si4713 (Módulo) | Função Técnica |
+>| :--- | :--- | :--- |
+>| **3V3** | `VIN` | Alimentação Elétrica (3.3V) |
+>| **GND** | `GND` | Referência de Aterramento |
+>| **D21** | `SDA` | Dados do Barramento I2C |
+>| **D22** | `SCL` | Clock do Barramento I2C |
+>| **D27** | `RST` | Controle de Reset de Hardware |
 
 ### Ligações do Receptor (ESP8266 + Si4703)
-| Módulo Rádio | Pino ESP32 (TX) | Pino ESP8266 (RX) |
-| :--- | :--- | :--- |
-| **VCC / 3.3V** | 3V3 | 3V3 |
-| **GND** | GND | GND |
-| **SDA** | GPIO 21 | D2 (GPIO 4) |
-| **SCL** | GPIO 22 | D1 (GPIO 5) |
-| **RST** | GPIO 17 (opcional) | D3 (GPIO 0) |
+><p align="left">
+>  <img src="docs/esquematicos/Diagrama_RXsi4703_esp8266.png" width="75%" alt="Diagrama de conexões do receptor">
+></p>
+>
+>| Módulo Rádio | Pino ESP32 (TX) | Pino ESP8266 (RX) |
+>| :--- | :--- | :--- |
+>| **VCC / 3.3V** | 3V3 | 3V3 |
+>| **GND** | GND | GND |
+>| **SDA** | GPIO 21 | D2 (GPIO 4) |
+>| **SCL** | GPIO 22 | D1 (GPIO 5) |
+>| **RST** | GPIO 17 (opcional) | D3 (GPIO 0) |
 
 **Atenção:** Os módulos Si4703 e Si4713 operam em 3.3V. **Não** conecte no pino de 5V (VIN), sob risco de queimar os CIs.
 
