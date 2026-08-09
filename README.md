@@ -11,7 +11,7 @@
 <table>
   <tr>
     <td>
-      <img src="gif_transmissor_legendado" alt="Transmissor Si4713 + ESP 32" width="400"/>
+      <img src="media/gif_transmissor_legendado.gif" alt="Transmissor Si4713 + ESP 32" width="400"/>
     </td>
     <td>
       <img src="gif_receptor_legendado" alt="Receptor Si4703 + ESP 8266" width="400"/>
