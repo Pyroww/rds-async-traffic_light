@@ -75,13 +75,23 @@ Importante ressaltar, que para melhor visualização e didática, fizemos um dia
 >  <img src="docs/esquematicos/Diagrama_RXsi4703_esp8266.png" width="75%" alt="Diagrama de conexões do receptor">
 ></p>
 >
->| Módulo Rádio | Pino ESP32 (TX) | Pino ESP8266 (RX) |
->| :--- | :--- | :--- |
->| **VCC / 3.3V** | 3V3 | 3V3 |
->| **GND** | GND | GND |
->| **SDA** | GPIO 21 | D2 (GPIO 4) |
->| **SCL** | GPIO 22 | D1 (GPIO 5) |
->| **RST** | GPIO 17 (opcional) | D3 (GPIO 0) |
+>Todas as conexões físicas do receptor, abrangendo o rádio e os atuadores luminosos, convergem para o mesmo microcontrolador. Siga o mapa >de fiação abaixo:
+>
+>| Pino ESP8266 (NodeMCU) | Componente Destino | Pino do Destino | Função Técnica / Observação |
+>| :--- | :--- | :--- | :--- |
+>| **3V3** | Rádio Si4703 | `VCC / VIN` | Alimentação elétrica (Exclusivo 3.3V) |
+>| **GND** | Rádio Si4703 | `GND` | Referência de aterramento do módulo rádio |
+>| **GND (Qualquer)** | Semáforo (LEDs)| `Cátodos (-)` | Retorno elétrico (perna curta dos 3 LEDs) |
+>| **D1 (GPIO 5)** | Rádio Si4703 | `SCLK` | Clock do Barramento I2C |
+>| **D2 (GPIO 4)** | Rádio Si4703 | `SDIO` | Dados do Barramento I2C |
+>| **D5 (GPIO 14)**| Rádio Si4703 | `RST` | Reset de Hardware do Módulo FM |
+>| **D6 (GPIO 12)**| Semáforo (LED) | `Anodo Verde` 🟢 | Atuador Lógico (Usar resistor em série) |
+>| **D7 (GPIO 13)**| Semáforo (LED) | `Anodo Amarelo` 🟡 | Atuador Lógico (Usar resistor em série) |
+>| **D8 (GPIO 15)**| Semáforo (LED) | `Anodo Vermelho` 🔴| Atuador Lógico (Usar resistor em série) |
+>
+> ⚠️ **Atenção à Tensão e Polaridade:**
+> * Não ligue o pino VIN do rádio Si4703 nos 5V (VU ou VIN do ESP), pois isso queimará o CI do rádio instantaneamente.
+> * **Ligação dos LEDs:** A perna mais longa de cada LED (Anodo) deve ser conectada aos pinos D6, D7 e D8 através de um resistor limitador (ex: 220Ω ou 330Ω) para proteger a porta lógica. A perna mais curta (Cátodo) de **todos os 3 LEDs** deve ser conectada aos slots **GND** disponíveis no ESP8266.
 
 **Atenção:** Os módulos Si4703 e Si4713 operam em 3.3V. **Não** conecte no pino de 5V (VIN), sob risco de queimar os CIs.
 
